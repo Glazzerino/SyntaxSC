@@ -3,5 +3,5 @@
 
 int main() {
    SyntaxScanner scanner;
-
+   scanner.scan("./testfile.sc");
 }

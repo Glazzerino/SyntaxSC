@@ -14,4 +14,22 @@ struct lexeme_t {
    std::string value;
    LexemeType type;
    lexeme_t(std::string val, LexemeType t) : value(val), type(t) {}
+   std::string typeString() {
+      switch (type) {
+         case RESERVED:
+            return "reserved";
+         case IDENTIFIER:
+            return "identifier";
+         case INT:
+            return "int";
+         case FLOAT:
+            return "float";
+         case OPERATOR:
+            return "operator";
+         case COMMENT:
+            return "comment";
+         default:
+            return "unknown";
+      }
+   }
 };

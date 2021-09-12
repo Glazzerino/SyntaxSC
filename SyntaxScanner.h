@@ -7,7 +7,6 @@
 
 const char* RES_WORDS_FILEPATH = "./resources/reserved_words.txt";
 const char* OPERATOR_FILEPATH = "./resources/operators.txt";
-
 class SyntaxScanner {
    public:
       SyntaxScanner();
@@ -20,8 +19,10 @@ private:
    std::vector<pattern_t> patterns; 
    void load_patterns();
    void load_from_file(std::string filename, std::unordered_set<std::string>& container);
-   void scan(std::ifstream file);
    lexeme_t classify_word(std::string word);
+   std::string lexeme_to_html(lexeme_t lexeme, size_t spaces);
+   std::string type_to_color(LexemeType type);
+   std::vector<std::string> words_html;
 };
 
 SyntaxScanner::SyntaxScanner() {
@@ -49,7 +50,7 @@ void SyntaxScanner::load_patterns() {
    // Symbols, reserved words and comments 
    // are implemented programmatically, not as regex patterns.
    patterns = {
-      // Int regex
+      // Int 
       pattern_t(R"(-?[1-9]\d*|0)", LexemeType::INT),
       // Identifier
       pattern_t(R"([^{}()\[\]&#'";,]+)", LexemeType::IDENTIFIER),
@@ -58,7 +59,8 @@ void SyntaxScanner::load_patterns() {
    };
 }
 
-void SyntaxScanner::scan(std::ifstream file) {
+void SyntaxScanner::scan(std::string filename) {
+   std::ifstream file(filename);
    // Iterate over characters in file
    std::string line;
    std::string word = "";
@@ -66,20 +68,41 @@ void SyntaxScanner::scan(std::ifstream file) {
 
    while (std::getline(file, line)) {
       int counter = 0;
+      int spaces = 0;
+      
       for (char c : line) {
-         if (c == ' ' || c == '\n') {
-            html_body += c;
-            lexeme_t lex = classify_word(word);
+         bool is_op = operators.find(std::string(1, c)) != operators.end();
+         if (isspace(c) || is_op) {
+            if (word != "") {
+               lexeme_t lex = classify_word(word);
+               std::string html_word = lexeme_to_html(lex, spaces);
+               words_html.push_back(html_word);
+               word = "";
+            }
+            if (isspace(c)) 
+               spaces++;
+            if (is_op) {
+               lexeme_t lex = lexeme_t(std::string(1, c), LexemeType::OPERATOR);
+               std::string html_word = lexeme_to_html(lex, spaces);
+               words_html.push_back(html_word);
+            }
          }
          else {
             word += c;
          }
-         counter++;
       }
+      // Add last word
+      if (word != "") {
+         lexemes.push_back(classify_word(word));
+         word = "";
+      }
+      html_body += "\n";
    }
 }
 
 lexeme_t SyntaxScanner::classify_word(std::string word) {
+
+   std::cout << word << "\n";
    // Check if word is reserved word
    if (reserved_words.find(word) != reserved_words.end()) {
       return lexeme_t(word, LexemeType::RESERVED);
@@ -90,7 +113,21 @@ lexeme_t SyntaxScanner::classify_word(std::string word) {
    }
    // Check against patterns
    for (pattern_t pattern : patterns) {
-     bool match = std::regex_match(word, pattern.regex); 
+      bool match = std::regex_match(word, pattern.regex); 
+      if (match) 
+         return lexeme_t(word, pattern.type);
    }
 
+}
+
+std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
+   std::string html = "";
+   html += R"(<font class=")" + lexeme.typeString() + R"(">)";
+   // Add spaces
+   for (size_t i = 0; i < spaces; i++) 
+      html += ' ';   
+   html += lexeme.value;
+   html += "</font>";
+   // std::cout << html << std::endl;
+   return html;
 }
