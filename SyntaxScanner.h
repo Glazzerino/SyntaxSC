@@ -22,7 +22,7 @@ private:
    void load_from_file(std::string filename, std::unordered_set<std::string>& container);
    lexeme_t classify_word(std::string word);
    std::string lexeme_to_html(lexeme_t lexeme, size_t spaces);
-   std::string type_to_color(LexemeType type);
+   std::string word_to_html(std::string word, size_t spaces);
    std::vector<std::string> words_html;
 };
 
@@ -65,20 +65,20 @@ void SyntaxScanner::scan(std::string filename) {
    // Iterate over characters in file
    std::string line;
    std::string word = "";
-   std::string html_body = "";
 
    while (std::getline(file, line)) {
       int counter = 0;
       int spaces = 0;
-      // If it is a comment line then add and skip to next line
-      if (line[0] == ';') {
-         lexeme_t comment_lex(line, LexemeType::COMMENT);
-         std::string comment = lexeme_to_html(comment_lex, 0);
-         words_html.push_back(comment);
-         continue;
-      } 
-      // If not a comment iterate over characters in line
       for (char c : line) {
+         // If character is comment symbol, add rest of line and skip to next line
+         if (c == ';') {
+            std::string comment_line = line.substr(counter);
+            lexeme_t lexeme(comment_line, LexemeType::COMMENT);
+            std::string comment_html = lexeme_to_html(lexeme, spaces); 
+            words_html.push_back(comment_html);
+            break;
+         }
+
          bool is_op = operators.find(std::string(1, c)) != operators.end();
          if (isspace(c)) {
             if (word != "") {
@@ -89,19 +89,28 @@ void SyntaxScanner::scan(std::string filename) {
             }
             spaces++;
          }
+
          else if (is_op) {
             if (word != "") {
+               // Manages cases where the - operator is used as part of an identifier
+               // e.g. "a-b"
+               // Scheme is weird
+               if (c == '-') {
+                  word += c;
+                  continue;
+               }
                lexeme_t lexeme = classify_word(word);
                std::string word_html = lexeme_to_html(lexeme, spaces);
                words_html.push_back(word_html);
                word = "";
             }
             lexeme_t oplex(std::string(1, c), LexemeType::OPERATOR);
-            std::string word_html = lexeme_to_html(oplex, spaces);
+            std::string word_html = lexeme_to_html(oplex, 0);
             words_html.push_back(word_html);
          }
          else 
             word += c;
+         counter++;
       }
       // Add last word
       if (word != "") {
@@ -151,3 +160,4 @@ void SyntaxScanner::print_html() {
          std::cout << std::endl;
    }
 }
+
