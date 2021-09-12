@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include "pattern.h"
 #include <regex>
+#include "HtmlBuilder.h"
 
 const char* RES_WORDS_FILEPATH = "./resources/reserved_words.txt";
 const char* OPERATOR_FILEPATH = "./resources/operators.txt";
@@ -11,7 +12,7 @@ class SyntaxScanner {
 public:
    SyntaxScanner();
    void scan(std::string filename);
-   void print_html();
+   void generate_html();
 private:
    void load_reserved_words();
    std::unordered_set<std::string> reserved_words;
@@ -27,6 +28,7 @@ private:
 };
 
 SyntaxScanner::SyntaxScanner() {
+   std::ios::sync_with_stdio(false);
    // Load reserved words
    load_from_file(RES_WORDS_FILEPATH, reserved_words);
    // Load operators
@@ -143,7 +145,6 @@ lexeme_t SyntaxScanner::classify_word(std::string word) {
 
 std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
    std::string html = "";
-   std::cout << lexeme.value << "\n";
    html += R"(<font class=")" + lexeme.typeString() + R"(">)";
    // Add spaces
    for (size_t i = 0; i < spaces; i++) 
@@ -154,10 +155,6 @@ std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
    return html;
 }
 
-void SyntaxScanner::print_html() {
-   for (std::string word : words_html) {
-      std::cout << word;
-      if (word == "<br/>")
-         std::cout << std::endl;
-   }
+void SyntaxScanner::generate_html() {
+   HtmlBuilder::write_html(words_html);
 }
