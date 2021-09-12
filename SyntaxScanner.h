@@ -69,27 +69,37 @@ void SyntaxScanner::scan(std::string filename) {
    while (std::getline(file, line)) {
       int counter = 0;
       int spaces = 0;
-      
+      // If it is a comment line then add and skip to next line
+      if (line[0] == ';') {
+         lexeme_t comment_lex(line, LexemeType::COMMENT);
+         std::string comment = lexeme_to_html(comment_lex, 0);
+         words_html.push_back(comment);
+         continue;
+      } 
+      // If not a comment iterate over characters in line
       for (char c : line) {
          bool is_op = operators.find(std::string(1, c)) != operators.end();
-         if (isspace(c) || is_op) {
+         if (isspace(c)) {
             if (word != "") {
-               lexeme_t lex = classify_word(word);
-               std::string html_word = lexeme_to_html(lex, spaces);
-               words_html.push_back(html_word);
+               lexeme_t lexeme = classify_word(word);
+               std::string word_html = lexeme_to_html(lexeme, spaces);
+               words_html.push_back(word_html);
                word = "";
             }
-            if (isspace(c)) 
-               spaces++;
-            if (is_op) {
-               lexeme_t lex = lexeme_t(std::string(1, c), LexemeType::OPERATOR);
-               std::string html_word = lexeme_to_html(lex, spaces);
-               words_html.push_back(html_word);
+            spaces++;
+         }
+         else if (is_op) {
+            if (word != "") {
+               lexeme_t lexeme = classify_word(word);
+               std::string word_html = lexeme_to_html(lexeme, spaces);
+               words_html.push_back(word_html);
+               word = "";
             }
+            lexeme_t oplex(std::string(1, c), LexemeType::OPERATOR);
+            std::string word_html = lexeme_to_html(oplex, spaces);
          }
-         else {
+         else 
             word += c;
-         }
       }
       // Add last word
       if (word != "") {
@@ -101,8 +111,6 @@ void SyntaxScanner::scan(std::string filename) {
 }
 
 lexeme_t SyntaxScanner::classify_word(std::string word) {
-
-   std::cout << word << "\n";
    // Check if word is reserved word
    if (reserved_words.find(word) != reserved_words.end()) {
       return lexeme_t(word, LexemeType::RESERVED);
@@ -122,6 +130,7 @@ lexeme_t SyntaxScanner::classify_word(std::string word) {
 
 std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
    std::string html = "";
+   std::cout << lexeme.value << "\n";
    html += R"(<font class=")" + lexeme.typeString() + R"(">)";
    // Add spaces
    for (size_t i = 0; i < spaces; i++) 
