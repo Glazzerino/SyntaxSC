@@ -7,6 +7,207 @@
    <title>SyntaxSC</title>
 </head>
 <body>
-   <font class="int">315125</font>
+<font class="reserved">lambda</font>
+<br/>
+<br/>
+<font class="reserved">true</font>
+<font class="reserved">  false</font>
+<br/>
+<font class="reserved">car</font>
+<font class="reserved">  cdr</font>
+<font class="reserved">    cons</font>
+<br/>
+<br/>
+<font class="reserved">apply</font>
+<br/>
+<br/>
+<font class="reserved">let</font>
+<br/>
+<br/>
+<font class="reserved">null?</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="operator">-</font>
+<br/>
+<br/>
+<font class="operator"><</font>
+<br/>
+<br/>
+<font class="operator">></font>
+<br/>
+<br/>
+<font class="operator">></font>
+<font class="operator">=</font>
+<br/>
+<br/>
+<font class="operator">=</font>
+<br/>
+<br/>
+<font class="operator"><</font>
+<font class="operator">></font>
+<br/>
+<br/>
+<font class="operator"> '</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="operator">(</font>
+<font class="reserved">define</font>
+<font class="operator"> (</font>
+<font class="identifier"> cuadrado</font>
+<font class="identifier">  x</font>
+<font class="operator">  )</font>
+<br/>
+<br/>
+<font class="operator">  (</font>
+<font class="operator">  *</font>
+<font class="identifier">   x</font>
+<font class="identifier">    x</font>
+<font class="operator">    )</font>
+<font class="operator">    )</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="operator">(</font>
+<font class="reserved">define</font>
+<font class="operator"> (</font>
+<font class="identifier"> area</font>
+<font class="operator"> -</font>
+<font class="identifier"> circulo</font>
+<font class="identifier">  r</font>
+<font class="operator">  )</font>
+<br/>
+<br/>
+<font class="operator">  (</font>
+<font class="operator">  *</font>
+<font class="float">   3.1416</font>
+<font class="operator">    (</font>
+<font class="identifier">    cuadrado</font>
+<font class="identifier">     r</font>
+<font class="operator">     )</font>
+<font class="operator">     )</font>
+<font class="operator">     )</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="operator">(</font>
+<font class="reserved">define</font>
+<font class="operator"> (</font>
+<font class="identifier"> area</font>
+<font class="operator"> -</font>
+<font class="identifier"> cilindro</font>
+<font class="identifier">  radio</font>
+<font class="identifier">   altura</font>
+<font class="operator">   )</font>
+<br/>
+<br/>
+<font class="operator">   (</font>
+<font class="operator">   +</font>
+<font class="operator">    (</font>
+<font class="operator">    *</font>
+<font class="int">     2</font>
+<font class="operator">      (</font>
+<font class="identifier">      área</font>
+<font class="operator">      -</font>
+<font class="identifier">      circulo</font>
+<font class="identifier">       radio</font>
+<font class="operator">       )</font>
+<br/>
+<br/>
+<font class="operator">        (</font>
+<font class="operator">        *</font>
+<font class="operator">         (</font>
+<font class="operator">         *</font>
+<font class="int">          2</font>
+<font class="identifier">           314.16E</font>
+<font class="operator">           -</font>
+<font class="int">           2</font>
+<font class="identifier">            radio</font>
+<font class="operator">            )</font>
+<font class="identifier">             altura</font>
+<font class="operator">             )</font>
+<font class="operator">             )</font>
+<font class="operator">             )</font>
+<font class="operator">             )</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="operator">(</font>
+<font class="reserved">define</font>
+<font class="operator"> (</font>
+<font class="identifier"> cuantos</font>
+<font class="identifier">  n</font>
+<font class="operator">  )</font>
+<font class="identifier">    cuantos</font>
+<font class="reserved">     define</font>
+<font class="identifier">      la</font>
+<font class="identifier">       cantidad</font>
+<font class="identifier">        de</font>
+<font class="identifier">         dígitos</font>
+<font class="identifier">          de</font>
+<font class="identifier">           un</font>
+<br/>
+<br/>
+<font class="operator">  (</font>
+<font class="reserved">  if</font>
+<font class="operator">   (</font>
+<font class="operator">   <</font>
+<font class="operator">   =</font>
+<font class="identifier">    n</font>
+<font class="int">     9</font>
+<font class="operator">     )</font>
+<br/>
+<br/>
+<font class="operator">    (</font>
+<font class="operator">    +</font>
+<font class="operator">     (</font>
+<font class="identifier">     cuantos</font>
+<font class="operator">      (</font>
+<font class="operator">      /</font>
+<font class="identifier">       n</font>
+<font class="int">        10</font>
+<font class="operator">        )</font>
+<font class="operator">        )</font>
+<font class="int">         1</font>
+<font class="operator">         )</font>
+<font class="operator">         )</font>
+<font class="operator">         )</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="comment">; errores</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<font class="operator">=</font>
+<font class="int">1</font>
+<font class="operator">+</font>
+<font class="float">5.8</font>
+<font class="operator">)</font>
+<br/>
 </body>
 </html>

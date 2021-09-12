@@ -8,9 +8,10 @@
 const char* RES_WORDS_FILEPATH = "./resources/reserved_words.txt";
 const char* OPERATOR_FILEPATH = "./resources/operators.txt";
 class SyntaxScanner {
-   public:
-      SyntaxScanner();
-      void scan(std::string filename);
+public:
+   SyntaxScanner();
+   void scan(std::string filename);
+   void print_html();
 private:
    void load_reserved_words();
    std::unordered_set<std::string> reserved_words;
@@ -52,10 +53,10 @@ void SyntaxScanner::load_patterns() {
    patterns = {
       // Int 
       pattern_t(R"(-?[1-9]\d*|0)", LexemeType::INT),
-      // Identifier
-      pattern_t(R"([^{}()\[\]&#'";,]+)", LexemeType::IDENTIFIER),
       // Float
       pattern_t(R"(-?\d+(\.\d+)?((e|E)-?\d+(\.\d+)?)?)", LexemeType::FLOAT),
+      // Identifier
+      pattern_t(R"([^{}()\[\]&#'";,]+)", LexemeType::IDENTIFIER),
    };
 }
 
@@ -97,6 +98,7 @@ void SyntaxScanner::scan(std::string filename) {
             }
             lexeme_t oplex(std::string(1, c), LexemeType::OPERATOR);
             std::string word_html = lexeme_to_html(oplex, spaces);
+            words_html.push_back(word_html);
          }
          else 
             word += c;
@@ -106,7 +108,7 @@ void SyntaxScanner::scan(std::string filename) {
          lexemes.push_back(classify_word(word));
          word = "";
       }
-      html_body += "\n";
+      words_html.push_back(std::string("<br/>"));
    }
 }
 
@@ -125,7 +127,6 @@ lexeme_t SyntaxScanner::classify_word(std::string word) {
       if (match) 
          return lexeme_t(word, pattern.type);
    }
-
 }
 
 std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
@@ -139,4 +140,10 @@ std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
    html += "</font>";
    // std::cout << html << std::endl;
    return html;
+}
+
+void SyntaxScanner::print_html() {
+   for (std::string word : words_html) {
+      std::cout << word << std::endl;
+   }
 }

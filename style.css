@@ -6,3 +6,23 @@ body {
 .int {
    color: orange;
 }
+
+.float {
+   color: green;
+}
+
+.identifier {
+   color: white;
+}
+
+.operator {
+   color: red;
+}
+
+.reserved {
+   color: skyblue;
+}
+
+.comment {
+   color: grey;
+}
