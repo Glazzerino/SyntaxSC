@@ -14,10 +14,8 @@ public:
    void scan(std::string filename);
    void generate_html();
 private:
-   void load_reserved_words();
    std::unordered_set<std::string> reserved_words;
    std::unordered_set<std::string> operators;
-   std::vector<lexeme_t> lexemes;
    std::vector<pattern_t> patterns; 
    void load_patterns();
    void load_from_file(std::string filename, std::unordered_set<std::string>& container);
