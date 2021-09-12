@@ -7,7 +7,8 @@ enum LexemeType {
    INT,
    FLOAT,
    OPERATOR,
-   COMMENT
+   COMMENT,
+   ERROR
 };
 
 struct lexeme_t {
@@ -28,6 +29,8 @@ struct lexeme_t {
             return "operator";
          case COMMENT:
             return "comment";
+         case ERROR:
+            return "error";
          default:
             return "unknown";
       }

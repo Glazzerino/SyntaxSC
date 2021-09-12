@@ -16,7 +16,7 @@ body {
 }
 
 .operator {
-   color: red;
+   color: palegoldenrod;
 }
 
 .reserved {
@@ -25,4 +25,8 @@ body {
 
 .comment {
    color: grey;
+}
+
+.error {
+   color: red;
 }

@@ -127,6 +127,8 @@ lexeme_t SyntaxScanner::classify_word(std::string word) {
       if (match) 
          return lexeme_t(word, pattern.type);
    }
+   // If not anything else, it is an error
+   return lexeme_t(word, LexemeType::ERROR);
 }
 
 std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
@@ -144,6 +146,8 @@ std::string SyntaxScanner::lexeme_to_html(lexeme_t lexeme, size_t spaces) {
 
 void SyntaxScanner::print_html() {
    for (std::string word : words_html) {
-      std::cout << word << std::endl;
+      std::cout << word;
+      if (word == "<br/>")
+         std::cout << std::endl;
    }
 }
