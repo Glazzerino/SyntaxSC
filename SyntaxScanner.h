@@ -65,29 +65,36 @@ void SyntaxScanner::scan(std::string filename) {
    // Iterate over characters in file
    std::string line;
    std::string word = "";
+   size_t spaces = 0;
+   // Lambda function to avoid repeating code when adding a lexeme to html vector
+   auto routine = [this] (std::string word, size_t& spaces) {
+      lexeme_t lexeme = classify_word(word);
+      std::string html = lexeme_to_html(lexeme, spaces);
+      words_html.push_back(html);
+      spaces = 0;
+   };
 
    while (std::getline(file, line)) {
       int counter = 0;
-      int spaces = 0;
       for (char c : line) {
-         // If character is comment symbol, add rest of line and skip to next line
+         // If character is comment symbol, add rest of line and skip
          if (c == ';') {
+            routine(word, spaces);
             std::string comment_line = line.substr(counter);
             lexeme_t lexeme(comment_line, LexemeType::COMMENT);
             std::string comment_html = lexeme_to_html(lexeme, spaces); 
             words_html.push_back(comment_html);
+            word = "";
             break;
          }
 
          bool is_op = operators.find(std::string(1, c)) != operators.end();
          if (isspace(c)) {
             if (word != "") {
-               lexeme_t lexeme = classify_word(word);
-               std::string word_html = lexeme_to_html(lexeme, spaces);
-               words_html.push_back(word_html);
+               routine(word, spaces);
                word = "";
+               spaces++;
             }
-            spaces++;
          }
 
          else if (is_op) {
@@ -99,14 +106,12 @@ void SyntaxScanner::scan(std::string filename) {
                   word += c;
                   continue;
                }
-               lexeme_t lexeme = classify_word(word);
-               std::string word_html = lexeme_to_html(lexeme, spaces);
-               words_html.push_back(word_html);
+               routine(word, spaces);
                word = "";
             }
-            lexeme_t oplex(std::string(1, c), LexemeType::OPERATOR);
-            std::string word_html = lexeme_to_html(oplex, 0);
-            words_html.push_back(word_html);
+            lexeme_t lexeme(std::string(1, c), LexemeType::OPERATOR);
+            std::string html = lexeme_to_html(lexeme, spaces);
+            words_html.push_back(html);
          }
          else 
             word += c;
@@ -114,7 +119,7 @@ void SyntaxScanner::scan(std::string filename) {
       }
       // Add last word
       if (word != "") {
-         lexemes.push_back(classify_word(word));
+         routine(word, spaces);
          word = "";
       }
       words_html.push_back(std::string("<br/>"));
@@ -125,10 +130,6 @@ lexeme_t SyntaxScanner::classify_word(std::string word) {
    // Check if word is reserved word
    if (reserved_words.find(word) != reserved_words.end()) {
       return lexeme_t(word, LexemeType::RESERVED);
-   }
-   // Check if word is an operator
-   if (operators.find(word) != operators.end()) {
-      return lexeme_t(word, LexemeType::OPERATOR);
    }
    // Check against patterns
    for (pattern_t pattern : patterns) {
@@ -160,4 +161,3 @@ void SyntaxScanner::print_html() {
          std::cout << std::endl;
    }
 }
-
